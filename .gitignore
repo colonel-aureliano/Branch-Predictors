@@ -1,0 +1,11 @@
+*.ece-4750-setup
+*Makefile
+*verilator.cpp
+*tinyrv2_encoding_assembler.py
+**/logs/
+**/waves/
+**/results/
+**/core.*
+**/obj_dir*
+**/*.hex*
+.DS_STORE
