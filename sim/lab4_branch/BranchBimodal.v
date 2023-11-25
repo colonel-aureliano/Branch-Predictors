@@ -91,9 +91,7 @@ module lab4_branch_BranchBimodal_Ctrl
   end
 
   always_comb begin 
-    if ( update_en ) begin 
-      pht_wen = 1'd1; 
-      
+    if ( update_en ) begin       
       casez ( rdata ) 
         2'b00:   if ( update_val ) pht_wdata = 2'b1; 
                  else pht_wdata = 2'b0; 
@@ -104,10 +102,11 @@ module lab4_branch_BranchBimodal_Ctrl
       endcase
     end 
     else begin 
-      pht_wen = 1'd0; 
       pht_wdata = 2'hx; 
     end 
   end
+
+  assign pht_wen = update_en; 
   
 endmodule
 
@@ -116,7 +115,7 @@ module lab4_branch_BranchBimodal_DPath
 #(
   parameter PHT_size = 2048, 
 
-  parameter c_addr_nbits  = $clog2(p_num_entries)
+  parameter c_addr_nbits  = $clog2(PHT_size)
 )
 (
   input logic         clk, 
