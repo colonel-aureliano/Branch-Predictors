@@ -170,11 +170,355 @@ module top(  input logic clk, input logic linetrace );
         assertion2( "pht after update ", 2'b00, DUT.dpath.pht.rfile[131]); 
         assertion("prediction after update", 1'b0, prediction);
 
+        //----------------------------------------------------------------------
+        // resetting
+        //----------------------------------------------------------------------
+        reset = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+
+
+        //----------------------------------------------------------------------
+        // Loop with no branches
+        //----------------------------------------------------------------------
+        $display("Test loop with no branches"); 
+
+        PC = {20'b0, 10'h1FF, 2'd0}; 
+
+        for ( integer i = 0; i < 10; i++) begin 
+            // loop 
+            update_val = 0; 
+            update_en = 0; 
+            @(negedge clk); 
+            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[10'h1FF]);
+            assertion("prediction after update", 1'b0, prediction);
+        end
+        
+        //----------------------------------------------------------------------
+        // Loop with one branch, always taken
+        //----------------------------------------------------------------------
+        reset = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, always taken"); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 1; i < 11; i++) begin 
+            // loop 
+            update_val = 1; 
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            if (i < 3) begin 
+                assertion2("pht after update", i[1:0], DUT.dpath.pht.rfile[13]);
+            end else begin 
+                assertion2("pht after update", 2'b11, DUT.dpath.pht.rfile[13]);
+            end
+            if (i < 2) begin 
+                assertion("prediction after update", 1'b0, prediction);
+            end else begin 
+                assertion("prediction after update", 1'b1, prediction);
+            end
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, always not taken from 00
+        //----------------------------------------------------------------------
+        
+        $display("Test loop with one single branch, always not taken from 00"); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 1; i < 11; i++) begin 
+            // loop 
+            update_val = 0; 
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            if (i == 1) begin 
+                assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end else if (i == 2) begin 
+                assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end else begin 
+                assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate taken and not taken
+        //----------------------------------------------------------------------
+        reset = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, alternate taken and not taken "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 1; i < 11; i++) begin 
+            // loop 
+            integer indicator = (i % 2); // taken, not taken, taken, not taken, ... 
+            update_val = indicator[0];
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_ABAB(i); 
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate AAAB (A = taken)
+        //----------------------------------------------------------------------
+        reset = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, AAAB "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 0; i < 20; i++) begin 
+            // loop 
+            integer indicator = (i % 4); // taken, taken, taken, not taken, taken ... 
+            // 01, 10, 11, 10, 11, 11, 11, 10, 11, 11, 11, 10, ....
+            update_val = indicator < 3;
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_AAAB(i);
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate BBBA (A = taken)
+        //----------------------------------------------------------------------
+        reset = 1; 
+        update_val = 0; 
+        update_en = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, BBBA "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 0; i < 20; i++) begin 
+            // loop 
+            integer indicator = (i % 4); // nnnt, nnnt, nnnt
+            update_val = indicator >= 3;
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_BBBA(i);
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate ABBA (A = taken)
+        //----------------------------------------------------------------------
+        reset = 1; 
+        update_val = 0; 
+        update_en = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, ABBA "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 0; i < 20; i++) begin 
+            // loop 
+            integer indicator = (i % 4); // nnnt, nnnt, nnnt
+            update_val = indicator == 0 || indicator == 3;
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_ABBA(i);
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate AAB (A = taken)
+        //----------------------------------------------------------------------
+        reset = 1; 
+        update_val = 0; 
+        update_en = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, AAB "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 0; i < 27; i++) begin 
+            // loop 
+            integer indicator = (i % 3); // nnnt, nnnt, nnnt
+            update_val = indicator < 2;
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_AAB(i);
+        end
+
+        //----------------------------------------------------------------------
+        // Loop with one branch, alternate BBA (A = taken)
+        //----------------------------------------------------------------------
+        reset = 1; 
+        update_val = 0; 
+        update_en = 1; 
+        @(negedge clk); 
+        reset = 0; 
+        @(negedge clk); 
+        
+        $display("Test loop with one single branch, BBA "); 
+
+        PC = {20'b0, 10'd13, 2'd0}; 
+
+        for ( integer i = 0; i < 27; i++) begin 
+            // loop 
+            integer indicator = (i % 3); // nnt, nnt
+            update_val = indicator == 2;
+            update_en = 1; 
+            @(negedge clk); 
+            update_en = 0;
+            
+            test_BBA(i, 10'd13);
+        end
+
 
         #20; 
         $finish();
     end
+
+    task test_BBA( integer index, [9:0] addr); 
+        // 00 00 01     00 00 01    00 00 01    
+        if (index % 3 < 2) begin 
+            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[addr]);
+            assertion("prediction after update", 1'b0, prediction);
+        end else begin 
+            assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[addr]);
+            assertion("prediction after update", 1'b0, prediction);
+        end
+
+    endtask
+
+
+    task test_AAB( integer index); 
+        // 01, 10, 01      10, 11, 10,    11, 11, 10     11, 11, 10     11
+        if ( index / 3 == 0) begin 
+            if (index == 1) begin 
+                assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end else begin 
+                assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+        end else if ( index / 3 == 1)begin 
+            if (index%3 == 1) begin 
+                assertion2("pht after update", 2'b11, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end else begin 
+                assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end
+        end else begin 
+            if ( index % 3 < 2) begin 
+                assertion2("pht after update", 2'b11, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end
+            else begin 
+                assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end
+        end
+
+    endtask
+
   
+    task test_ABBA( integer index); 
+        // 01, 00, 00, 01,   10, 01, 00, 01,    10, 01, 00, 01
+        if ((index / 4) == 0) begin 
+            if ( index % 4 == 0 || index % 4 == 3) begin 
+                assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+            else begin 
+                assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+        end else begin 
+            if ( index % 2 == 1) begin 
+                assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+            else if (index % 4 == 0) begin 
+                assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b1, prediction);
+            end else begin 
+                assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[13]);
+                assertion("prediction after update", 1'b0, prediction);
+            end
+        end
+
+    endtask
+
+    task test_BBBA( integer index ); 
+        // 00, 00, 00, 01, 00, 00, 00, 01
+        $display("index: %d", index);
+        if ( index % 4 < 3) begin 
+            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b0, prediction);
+        end
+        else begin 
+            assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b0, prediction);
+        end
+    endtask
+
+    task test_AAAB( integer index ); 
+        if ( index == 0 ) begin 
+            assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b0, prediction);
+        end 
+        else if ( index == 1 ) begin 
+            assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b1, prediction);
+        end
+        else if ( index % 4 < 3) begin 
+            assertion2("pht after update", 2'b11, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b1, prediction);
+        end
+        else begin 
+            assertion2("pht after update", 2'b10, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b1, prediction);
+        end
+    endtask
+
+    task test_ABAB( integer index ); 
+        if ( index % 2 == 1) begin 
+            assertion2("pht after update", 2'b01, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b0, prediction);
+        end else begin 
+            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[13]);
+            assertion("prediction after update", 1'b0, prediction);
+        end
+    endtask
+
+
     task assertion( string varname, [0:0] expected, [0:0] actual ); 
         begin 
             assert(expected == actual) begin
