@@ -5,11 +5,9 @@
 `ifndef LAB4_BRANCH_BRANCH_GLOBAL_V
 `define LAB4_BRANCH_BRANCH_GLOBAL_V
 
-`include "vc/mem-msgs.v"
-`include "vc/queues.v"
-`include "vc/trace.v"
-`include "vc/muxes.v"
-`include "vc/regs.v" 
+`include "muxes.v"
+`include "regs.v" 
+`include "regfiles.v" 
 
 module lab4_branch_BranchGlobal
 #(

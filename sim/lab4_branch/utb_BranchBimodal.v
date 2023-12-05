@@ -8,8 +8,8 @@
 
 
 `include "BranchBimodal.v"
-`include "vc/trace.v"
-`include "vc/regfiles.v"
+`include "trace.v"
+`include "regfiles.v"
 //------------------------------------------------------------------------
 // Top-level module
 //------------------------------------------------------------------------

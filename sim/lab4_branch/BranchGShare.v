@@ -5,10 +5,8 @@
 `ifndef LAB4_BRANCH_BRANCH_GSHARE_V
 `define LAB4_BRANCH_BRANCH_GSHARE_V
 
-`include "vc/mem-msgs.v"
-`include "vc/queues.v"
-`include "vc/trace.v"
-
+`include "regfiles.v"
+`include "regs.v" 
 
 module lab4_branch_BranchGshare
 #(

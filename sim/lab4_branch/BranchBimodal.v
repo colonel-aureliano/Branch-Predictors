@@ -5,10 +5,7 @@
 `ifndef LAB4_BRANCH_BRANCH_BIMODAL_V
 `define LAB4_BRANCH_BRANCH_BIMODAL_V
 
-`include "vc/mem-msgs.v"
-`include "vc/queues.v"
-`include "vc/trace.v"
-`include "vc/regfiles.v"
+`include "regfiles.v"
 
 module lab4_branch_BranchBimodal
 #(
