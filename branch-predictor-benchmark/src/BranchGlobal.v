@@ -5,7 +5,6 @@
 `ifndef LAB4_BRANCH_BRANCH_GLOBAL_V
 `define LAB4_BRANCH_BRANCH_GLOBAL_V
 
-`include "muxes.v"
 `include "regs.v" 
 `include "regfiles.v" 
 
