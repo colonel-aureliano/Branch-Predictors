@@ -44,7 +44,7 @@ module lab4_branch_BranchGshare
     .en   ( glob_reg_en ) 
   );
 
-  logic [c_addr_nbits-2:0] extender; 
+  logic [c_addr_nbits-2:0] extender; // line not coverable as it's hardcoded to 0; meant for zero-extension
   assign extender = 0; 
   assign glob_reg_update = {extender,update_val} + (glob_reg_out << 1);
 

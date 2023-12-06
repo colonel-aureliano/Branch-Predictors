@@ -132,7 +132,7 @@ module lab4_branch_BranchGlobal_DPath
     .en   ( glob_reg_en ) 
   );
 
-  logic [c_addr_nbits-2:0] extender; 
+  logic [c_addr_nbits-2:0] extender; // line not coverable as it's hardcoded to 0; meant for zero-extension
   assign extender = 0; 
 
   assign next_glob = ( index << 1 ) + {extender, update_val}; 
