@@ -1,18 +1,15 @@
-//========================================================================
-// Verilog Components: Register Files
-//========================================================================
-
-`ifndef REGFILES_V
-`define REGFILES_V
+`ifndef VC_REGFILES_V
+`define VC_REGFILES_V
 
 //------------------------------------------------------------------------
-// 1r1w register file
+// 1r1w register file with reset
 //------------------------------------------------------------------------
 
-module vc_Regfile_1r1w
+module vc_ResetRegfile_1r1w
 #(
   parameter p_data_nbits  = 1,
   parameter p_num_entries = 2,
+  parameter p_reset_value = 0,
 
   // Local constants not meant to be set from outside the module
   parameter c_addr_nbits  = $clog2(p_num_entries)
@@ -38,13 +35,21 @@ module vc_Regfile_1r1w
 
   assign read_data = rfile[read_addr];
 
-  // Write on positive clock edge
+  // Write on positive clock edge. We have to use a generate statement to
+  // allow us to include the reset logic for each individual register.
 
-  always_ff @( posedge clk )
-    if ( write_en )
-      rfile[write_addr] <= write_data;
-
+  genvar i;
+  generate
+    for ( i = 0; i < p_num_entries; i = i+1 )
+    begin : wport
+      always_ff @( posedge clk )
+        if ( reset )
+          rfile[i] <= p_reset_value;
+        else if ( write_en && (i[c_addr_nbits-1:0] == write_addr) )
+          rfile[i] <= write_data;
+    end
+  endgenerate
 
 endmodule
 
-`endif
+`endif /* VC_REGFILES_V */

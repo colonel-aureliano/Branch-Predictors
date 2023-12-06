@@ -9,7 +9,7 @@
 // 1r1w register file
 //------------------------------------------------------------------------
 
-module vc_Regfile_1r1w
+module vc_ResetRegfile_1r1w
 #(
   parameter p_data_nbits  = 1,
   parameter p_num_entries = 2,

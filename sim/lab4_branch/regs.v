@@ -12,9 +12,10 @@
 `ifndef VC_REGS_V
 `define VC_REGS_V
 
-module vc_EnReg
+module vc_EnResetReg
 #(
-  parameter p_nbits = 1
+  parameter p_nbits       = 1,
+  parameter p_reset_value = 0
 )(
   input  logic               clk,   // Clock input
   input  logic               reset, // Sync reset input
@@ -24,8 +25,8 @@ module vc_EnReg
 );
 
   always_ff @( posedge clk )
-    if ( en )
-      q <= d;
+    if ( reset || en )
+      q <= reset ? p_reset_value : d;
 
 endmodule
 

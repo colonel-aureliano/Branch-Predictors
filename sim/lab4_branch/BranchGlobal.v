@@ -121,25 +121,14 @@ module lab4_branch_BranchGlobal_DPath
 
 );
   
-  localparam z = 0; 
-
   logic [c_addr_nbits-1:0] next_glob; 
-  logic [c_addr_nbits-1:0] glob_mux_out; 
-  
-  vc_Mux2 #(c_addr_nbits) glob_mux 
-  (
-    .in0 (z), 
-    .in1 (next_glob), 
-    .sel (glob_mux_sel), 
-    .out (glob_mux_out)
-  ); 
 
   logic [c_addr_nbits-1:0] index; 
-  vc_EnReg #(c_addr_nbits) glob_reg 
+  vc_EnResetReg #(c_addr_nbits) glob_reg 
   (
     .clk (clk), 
     .reset (reset), 
-    .d    ( glob_mux_out ), 
+    .d    ( next_glob ), 
     .q    ( index ), 
     .en   ( glob_reg_en ) 
   );
@@ -150,7 +139,7 @@ module lab4_branch_BranchGlobal_DPath
   assign next_glob = ( index << 1 ) + {extender, update_val}; 
 
   
-  vc_Regfile_1r1w #(2, PHT_size) pht
+  vc_ResetRegfile_1r1w #(2, PHT_size) pht
   (
     .clk(clk), 
     .reset(reset), 

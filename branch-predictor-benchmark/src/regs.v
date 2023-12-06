@@ -12,7 +12,7 @@
 `ifndef VC_REGS_V
 `define VC_REGS_V
 
-module vc_EnReg
+module vc_EnResetReg
 #(
   parameter p_nbits = 1
 )(
