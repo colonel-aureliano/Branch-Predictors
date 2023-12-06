@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 # Function to calculate prediction accuracy for different PHT sizes
 def get_accuracy():
-    pht_sizes = [2 ** i for i in range(4, 15)]  # List to store PHT sizes (power of two between 16 and 16384)
+    pht_sizes = [2 ** i for i in range(4, 17)]  # List to store PHT sizes (power of two between 16 and 16384)
     bimodal_accuracy = []  # List to store accuracy for Bimodal Predictor
     global_accuracy = []  # List to store accuracy for Global Predictor
     gshare_accuracy = []  # List to store accuracy for GShare Predictor

@@ -2,11 +2,11 @@
 
 # Provided lists of values
 design_list=("BranchBimodal" "BranchGlobal" "BranchGShare")
-pht_size_list=("2048" "4096" "8192" "16384")
+pht_size_list=("65536")
 trace_list=("164.gzip/gzip.trace" "175.vpr/vpr.trace.bz2" "201.compress/compress.trace.bz2" "202.jess/jess.trace.bz2" "300.twolf/twolf.trace.bz2")
 
 # Get the result file name as a parameter, defaulting to "run_result.txt"
-result_file="run_result.txt"
+result_file="run_result2.txt"
 
 # Create or clear the result file
 > "$result_file"
