@@ -63,29 +63,6 @@ module lab4_branch_BranchBimodal_Ctrl
   output logic [1:0] pht_wdata
 );
   
-  localparam pred_state = 1'd0; 
-  localparam update_state = 1'd1; 
-
-  logic state; 
-  logic next_state; 
-
-  always_ff @(posedge clk) begin 
-    if ( reset ) begin 
-      state <= pred_state; 
-    end 
-    else begin 
-      state <= next_state; 
-    end
-  end
-
-
-  always_comb begin 
-    if ( update_en ) begin 
-      next_state = update_state; 
-    end else begin 
-      next_state = pred_state; 
-    end
-  end
 
   always_comb begin 
     if ( update_en ) begin       

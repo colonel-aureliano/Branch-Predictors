@@ -161,7 +161,7 @@ int main (int argc, char *argv[]) {
 	// each trace represents exactly 100 million instructions.
 
 	printf ("%0.3f MPKI\n", 1000.0 * (dmiss / 1e8));
-	printf ("%0.3f Prediction accuarcy \n",  (float)(dtotal-dmiss) / dtotal);
+	printf ("%0.3f Prediction accuracy \n",  (float)(dtotal-dmiss) / dtotal);
 
     if(waves){
         tfp->close();
