@@ -108,7 +108,7 @@ module lab4_branch_BranchBimodal_DPath
   logic [c_addr_nbits-1:0] index; 
   assign index = PC[c_addr_nbits+1:2]; 
   
-  vc_ResetRegfile_1r1w #(2, PHT_size) pht
+  resetRegfile_1r1w #(2, PHT_size) pht
   (
     .clk(clk), 
     .reset(reset), 

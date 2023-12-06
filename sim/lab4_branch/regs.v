@@ -1,18 +1,7 @@
-//========================================================================
-// Verilog Components: Registers
-//========================================================================
+`ifndef REGS_V
+`define REGS_V
 
-// Note that we place the register output earlier in the port list since
-// this is one place we might actually want to use positional port
-// binding like this:
-//
-//  logic [p_nbits-1:0] result_B;
-//  vc_Reg#(p_nbits) result_AB( clk, result_B, result_A );
-
-`ifndef VC_REGS_V
-`define VC_REGS_V
-
-module vc_EnResetReg
+module enResetReg
 #(
   parameter p_nbits       = 1,
   parameter p_reset_value = 0
@@ -30,5 +19,5 @@ module vc_EnResetReg
 
 endmodule
 
-`endif /* VC_REGS_V */
+`endif /* REGS_V */
 

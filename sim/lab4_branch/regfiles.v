@@ -1,11 +1,11 @@
-`ifndef VC_REGFILES_V
-`define VC_REGFILES_V
+`ifndef REGFILES_V
+`define REGFILES_V
 
 //------------------------------------------------------------------------
 // 1r1w register file with reset
 //------------------------------------------------------------------------
 
-module vc_ResetRegfile_1r1w
+module resetRegfile_1r1w
 #(
   parameter p_data_nbits  = 1,
   parameter p_num_entries = 2,
@@ -29,10 +29,10 @@ module vc_ResetRegfile_1r1w
   input  logic [p_data_nbits-1:0] write_data
 );
 
-  logic [p_data_nbits-1:0] rfile[p_num_entries-1:0];
+  logic [p_data_nbits-1:0] rfile[p_num_entries-1:0]; // if showing up as covered, it shouldn't be
+  // see utb where each entry is at least assigned to once
 
   // Combinational read
-
   assign read_data = rfile[read_addr];
 
   // Write on positive clock edge. We have to use a generate statement to
@@ -52,4 +52,4 @@ module vc_ResetRegfile_1r1w
 
 endmodule
 
-`endif /* VC_REGFILES_V */
+`endif /* REGFILES_V */

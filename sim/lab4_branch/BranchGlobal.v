@@ -123,7 +123,7 @@ module lab4_branch_BranchGlobal_DPath
   logic [c_addr_nbits-1:0] next_glob; 
 
   logic [c_addr_nbits-1:0] index; 
-  vc_EnResetReg #(c_addr_nbits) glob_reg 
+  enResetReg #(c_addr_nbits) glob_reg 
   (
     .clk (clk), 
     .reset (reset), 
@@ -138,7 +138,7 @@ module lab4_branch_BranchGlobal_DPath
   assign next_glob = ( index << 1 ) + {extender, update_val}; 
 
   
-  vc_ResetRegfile_1r1w #(2, PHT_size) pht
+  resetRegfile_1r1w #(2, PHT_size) pht
   (
     .clk(clk), 
     .reset(reset), 

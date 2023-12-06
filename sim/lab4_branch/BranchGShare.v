@@ -35,7 +35,7 @@ module lab4_branch_BranchGshare
   logic [c_addr_nbits-1:0] glob_reg_out;
   logic [c_addr_nbits-1:0] glob_reg_update;
 
-  vc_EnResetReg #(c_addr_nbits) glob_reg 
+  enResetReg #(c_addr_nbits) glob_reg 
   (
     .clk (clk), 
     .reset (reset), 
@@ -54,7 +54,7 @@ module lab4_branch_BranchGshare
 
   logic [ 1:0] rdata;
 
-  vc_ResetRegfile_1r1w #(2, PHT_size) pht
+  resetRegfile_1r1w #(2, PHT_size) pht
   (
     .clk(clk), 
     .reset(reset), 

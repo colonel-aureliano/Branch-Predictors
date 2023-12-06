@@ -6,9 +6,10 @@
 `default_nettype none
 `timescale 1ps/1ps
 
+import "DPI-C" function void pass() ;
+import "DPI-C" function void fail() ;
 
 `include "BranchBimodal.v"
-`include "trace.v"
 `include "regfiles.v"
 //------------------------------------------------------------------------
 // Top-level module
