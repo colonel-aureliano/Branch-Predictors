@@ -105,7 +105,8 @@ module lab4_branch_BranchBimodal_DPath
 );
   
   // segmenting PC to extract index 
-  logic [c_addr_nbits-1:0] index; 
+  logic [c_addr_nbits-1:0] index; // if not covered, it may have been optimized
+  // away, our utb does toggle all bits of this value
   assign index = PC[c_addr_nbits+1:2]; 
   
   resetRegfile_1r1w #(2, PHT_size) pht

@@ -185,14 +185,14 @@ module top(  input logic clk, input logic linetrace );
         //----------------------------------------------------------------------
         $display("Test loop with no branches"); 
 
-        PC = {20'b0, 10'h1FF, 2'd0}; 
+        PC = {20'b0, 10'h0, 2'd0}; 
 
         for ( integer i = 0; i < 10; i++) begin 
             // loop 
             update_val = 0; 
             update_en = 0; 
             @(negedge clk); 
-            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[10'h1FF]);
+            assertion2("pht after update", 2'b00, DUT.dpath.pht.rfile[10'h0]);
             assertion("prediction after update", 1'b0, prediction);
         end
         
